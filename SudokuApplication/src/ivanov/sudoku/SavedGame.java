@@ -10,9 +10,7 @@ import java.io.Serializable;
  * @author Ivo Ivanov
  *
  */
-
-public class SavedGame implements Serializable {
-	
+public class SavedGame implements Serializable {	
 	private static final long serialVersionUID = 1L;
 	private int[][] gameCopy;
 	private Game game;
@@ -32,7 +30,6 @@ public class SavedGame implements Serializable {
 		this.minutes = timeKeeper.getMinutes();
 		this.seconds = timeKeeper.getSeconds();
 		this.userInputCopy = this.copyUserInput(numbersPanel);
-	
 	}
 	
 	/**
@@ -42,7 +39,6 @@ public class SavedGame implements Serializable {
 	 * @param numbersPanel - the provided Sudoku board  
 	 * @return - a two dimensional array of numbers from the Sudoku board 
 	 */
-	
 	private int[][] copyGame (NumbersPanel numbersPanel){
 		int[][] game = new int[9][9];
 		for (int i =0 ; i < 9; i++){
@@ -59,8 +55,7 @@ public class SavedGame implements Serializable {
 	 * 
 	 * @param numbersPanel
 	 * @return 
-	 */
-	
+	 */	
 	private boolean[][] copyUserInput (NumbersPanel numbersPanel){
 		boolean[][] userInput = new boolean[9][9];
 		for (int i =0 ; i < 9; i++){
@@ -74,7 +69,6 @@ public class SavedGame implements Serializable {
 	/**
 	 * Prints the game on the console for debugging
 	 */
-	
 	public void printGame(){
 		for (int y = 0; y < 9; y++) {
 			for (int x = 0; x < 9; x++)
@@ -90,13 +84,10 @@ public class SavedGame implements Serializable {
 	public int[][] getGameCopy() {
 		return gameCopy;
 	}
-
-
-
+	
 	public int getHours() {
 		return hours;
 	}
-
 
 	public int getMinutes() {
 		return minutes;
@@ -109,5 +100,4 @@ public class SavedGame implements Serializable {
 	public int getSeconds() {
 		return seconds;
 	}
-
 }

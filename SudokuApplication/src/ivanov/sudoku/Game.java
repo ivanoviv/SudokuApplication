@@ -5,30 +5,27 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-
 /**
- * This class includes an algorithm to generate a fully solved Sudoku board, and a 
- * corresponding Sudoku game (with missing cells) from it. The class also contains a method to check the
- * user input obtained from the NumbersPanel.
+ * This class includes an algorithm to generate a fully solved Sudoku board, and
+ * a corresponding Sudoku game (with missing cells) from it. The class also
+ * contains a method to check the user input obtained from the NumbersPanel.
  * 
  * Credits to Eric Beijer for the algorithm
  *
  */
-public class Game implements Serializable  {
+public class Game implements Serializable {
 	private int[][] solution; // Generated solution.
 	private int[][] game; // Generated game with user input.
 
 	/**
 	 * Constructor which creates a new Sudoku game
 	 * 
-	 * @ param dificulty - a parameter indicating how many 
-	 * 						numbers on top of the hardest 
-	 * 						level should the Sudoku have (0 - hardest, 10 -medium, 20 - easy)
+	 * @ param difficulty - a parameter indicating how many numbers on top of the
+	 * hardest level should the Sudoku have (0 - hardest, 10 -medium, 20 - easy)
 	 * 
 	 */
 	public Game(int dificulty) {
 		newGame(dificulty);
-		
 		print(game);
 		print(solution);
 	}
@@ -37,14 +34,10 @@ public class Game implements Serializable  {
 	 * Generates a new Sudoku game.<br />
 	 *
 	 */
-	public void newGame(int difficulty) {
+	private void newGame(int difficulty) {
 		solution = generateSolution(new int[9][9], 0);
 		game = generateGame(copy(solution), difficulty);
-		
 	}
-
-
-
 
 	/**
 	 * Sets given number on given position in the game.
@@ -172,29 +165,26 @@ public class Game implements Serializable  {
 	 * @return Sudoku game solution.
 	 */
 	private int[][] generateSolution(int[][] game, int index) {
-		if (index > 80)
+		if (index > 80) {
 			return game;
-
+		}
 		int x = index % 9;
 		int y = index / 9;
-
 		List<Integer> numbers = new ArrayList<Integer>();
-		for (int i = 1; i <= 9; i++)
+		for (int i = 1; i <= 9; i++) {
 			numbers.add(i);
+		}
 		Collections.shuffle(numbers);
-
 		while (numbers.size() > 0) {
 			int number = getNextPossibleNumber(game, x, y, numbers);
 			if (number == -1)
 				return null;
-
 			game[y][x] = number;
 			int[][] tmpGame = generateSolution(game, index + 1);
 			if (tmpGame != null)
 				return tmpGame;
 			game[y][x] = 0;
 		}
-
 		return null;
 	}
 
@@ -207,8 +197,9 @@ public class Game implements Serializable  {
 	 */
 	private int[][] generateGame(int[][] game, int difficulty) {
 		List<Integer> positions = new ArrayList<Integer>();
-		for (int i = 0; i < 81; i++)
+		for (int i = 0; i < 81; i++){
 			positions.add(i);
+		}
 		Collections.shuffle(positions);
 		return generateGame(game, positions, difficulty);
 	}
@@ -216,8 +207,8 @@ public class Game implements Serializable  {
 	/**
 	 * Generates Sudoku game from solution, user should use the other
 	 * generateGame method. This method simple removes a number at a position.
-	 * If the game isn't anymore valid (does not have only 1 solution)
-	 * after this action, the game will be brought back to previous state.
+	 * If the game isn't anymore valid (does not have only 1 solution) after
+	 * this action, the game will be brought back to previous state.
 	 *
 	 * @param game
 	 *            Game to be generated.
@@ -235,15 +226,23 @@ public class Game implements Serializable  {
 			int y = position / 9;
 			int temp = game[y][x];
 			game[y][x] = 0;
-
-			if (!isValid(game)){
+			if (!isValid(game)) {
 				game[y][x] = temp;
-			removedNumberIndex.remove((Integer) position);
+				removedNumberIndex.remove((Integer) position);
 			}
 		}
-
+		this.setDificulty(game, removedNumberIndex, difficulty);
+		return game;
+	}
+	
+	/**
+	 * An internal method used to set the difficulty to the game once a game has been created
+	 * @param game - the game for which the difficulty will be set 
+	 * @param removedNumberIndex - a list containing the position of each removed number
+	 * @param difficulty - an integer indicating what difficulty should the game be set to
+	 */
+	private void setDificulty(int[][] game, List<Integer> removedNumberIndex, int difficulty){
 		int i = 0;
-
 		while (i <= difficulty) {
 			int position = removedNumberIndex.remove(i);
 			int x = position % 9;
@@ -251,8 +250,6 @@ public class Game implements Serializable  {
 			game[y][x] = this.solution[y][x];
 			i++;
 		}
-
-		return game;
 	}
 
 	public int[][] getSolution() {
@@ -267,7 +264,7 @@ public class Game implements Serializable  {
 	 * @return True if game is valid, false otherwise.
 	 */
 	private boolean isValid(int[][] game) {
-		return isValid(game, 0, new int[] { 0 }); 
+		return isValid(game, 0, new int[] { 0 });
 	}
 
 	/**
@@ -286,45 +283,45 @@ public class Game implements Serializable  {
 	private boolean isValid(int[][] game, int index, int[] numberOfSolutions) {
 		if (index > 80)
 			return ++numberOfSolutions[0] == 1;
-
 		int x = index % 9;
 		int y = index / 9;
-
 		if (game[y][x] == 0) {
 			List<Integer> numbers = new ArrayList<Integer>();
-			for (int i = 1; i <= 9; i++)
+			for (int i = 1; i <= 9; i++){
 				numbers.add(i);
-
+			}
 			while (numbers.size() > 0) {
 				int number = getNextPossibleNumber(game, x, y, numbers);
-				if (number == -1)
+				if (number == -1){
 					break;
+				}
 				game[y][x] = number;
-
 				if (!isValid(game, index + 1, numberOfSolutions)) {
 					game[y][x] = 0;
 					return false;
 				}
 				game[y][x] = 0;
 			}
-		} else if (!isValid(game, index + 1, numberOfSolutions))
+		} else if (!isValid(game, index + 1, numberOfSolutions)) {
 			return false;
-
+		}
 		return true;
 	}
-	
+
 	/**
 	 * A method to check the passed as an argument game
 	 * 
-	 * @param userGame - the game to be checked
-	 * @return a boolean matrix indicating whether a number in the game to be checked is correct or not 
+	 * @param userGame
+	 *            - the game to be checked
+	 * @return a boolean matrix indicating whether a number in the game to be
+	 *         checked is correct or not
 	 */
-	
-	public boolean[][] checkUserGame (int[][] userGame){
+
+	public boolean[][] checkUserGame(int[][] userGame) {
 		boolean[][] checkMatrix = new boolean[9][9];
 		for (int i = 0; i < userGame.length; i++) {
 			for (int j = 0; j < userGame[i].length; j++) {
-				checkMatrix[i][j]=userGame[i][j]==this.solution[i][j];
+				checkMatrix[i][j] = userGame[i][j] == this.solution[i][j];
 			}
 		}
 		return checkMatrix;
@@ -347,7 +344,7 @@ public class Game implements Serializable  {
 	}
 
 	/**
-	 * Prints the solution of the Sudoku - used for debugging 
+	 * Prints the solution of the Sudoku - used for debugging
 	 * 
 	 * @param game
 	 */
@@ -360,13 +357,13 @@ public class Game implements Serializable  {
 		}
 	}
 
-	
 	/**
-	 * a method used to set a solution from a loaded game 
+	 * a method used to set a solution from a loaded game
 	 * 
-	 * @param solutionCopy - the solution to the game 
+	 * @param solutionCopy
+	 *            - the solution to the game
 	 */
-	public void setSolution(int[][] solutionCopy){
+	public void setSolution(int[][] solutionCopy) {
 		this.solution = solutionCopy;
 	}
 

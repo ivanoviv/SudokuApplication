@@ -15,7 +15,6 @@ import javax.swing.Timer;
  */
 public class TimeKeeper extends JLabel implements ActionListener {
 	private Timer timer;
-	
 	private int hours = 00;
 	private int minutes = 00;
 	private int seconds = 0;
@@ -27,7 +26,6 @@ public class TimeKeeper extends JLabel implements ActionListener {
 		this.setText(this.time);
 		this.timer = new Timer(1000, this);
 		timer.start();
-
 	}
 
 	private void updateTime() {
@@ -41,8 +39,8 @@ public class TimeKeeper extends JLabel implements ActionListener {
 			this.hours++;
 		}
 		this.time= String.format("Time: %02d:%02d:%02d", this.hours, this.minutes, this.seconds);
-		
 	}
+	
 	public void restart(){
 		this.timer.stop();
 		this.seconds =0;
@@ -85,7 +83,4 @@ public class TimeKeeper extends JLabel implements ActionListener {
 	public void setSeconds(int seconds) {
 		this.seconds = seconds;
 	}
-	
-	
-
 }
